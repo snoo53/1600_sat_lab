@@ -446,6 +446,12 @@ h2 {
   box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
 }
 
+.lead .lead-fineprint {
+  margin-top: 18px;
+  font-size: 0.85rem;
+  color: var(--gray-400);
+}
+
 /* ===== Pricing ===== */
 .price-card {
   max-width: 520px;

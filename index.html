@@ -43,7 +43,7 @@
     <div class="container">
       <span class="eyebrow">Digital SAT · Practice Test 1</span>
       <h1>Perfect-score practice for the <span class="accent">Digital SAT</span></h1>
-      <p class="subhead">A full-length, original practice test engineered to mirror the real adaptive exam — with answer explanations that teach you why every wrong choice is wrong.</p>
+      <p class="subhead">A full-length, original practice test engineered to mirror the format, difficulty, and pacing of the Digital SAT — with answer explanations that teach you why every wrong choice is wrong.</p>
       <div class="hero-actions">
         <a class="btn btn-primary" href="#pricing">Get Practice Test 1 — $19</a>
         <a class="btn btn-ghost" href="#sample">Try 5 free questions</a>
@@ -69,7 +69,7 @@
         <div class="feature-card">
           <span class="icon">×4</span>
           <h3>All 4 Digital SAT modules</h3>
-          <p>Two Reading &amp; Writing modules and two Math modules, structured exactly like the adaptive test you'll sit for.</p>
+          <p>Two Reading &amp; Writing modules and two Math modules, structured like the real Digital SAT. (This practice test is non-adaptive.)</p>
         </div>
         <div class="feature-card">
           <span class="icon">A→D</span>
@@ -322,6 +322,24 @@
         <script>
           fetch("https://assets.mailerlite.com/jsonp/2413380/forms/189580797053765214/takel")
         </script>
+        <script>
+          /* Fallback: guarantee the sample download appears after a valid submit, even if
+             MailerLite's inline success callback doesn't fire on this self-hosted embed. */
+          (function () {
+            var sel = '.ml-subscribe-form-42291387';
+            var form = document.querySelector(sel + ' form');
+            if (!form) return;
+            form.addEventListener('submit', function () {
+              setTimeout(function () {
+                var ok = document.querySelector(sel + ' .row-success');
+                var row = document.querySelector(sel + ' .row-form');
+                if (ok) ok.style.display = '';
+                if (row) row.style.display = 'none';
+              }, 1500);
+            });
+          })();
+        </script>
+        <p class="lead-fineprint">Instant download — and we'll email you when new practice tests drop. No spam; unsubscribe anytime.</p>
       </div>
     </div>
   </section>
@@ -348,7 +366,7 @@
           <li>Detailed explanations &amp; distractor analysis</li>
           <li>400–1600 scoring guide</li>
           <li>Instant PDF delivery by email</li>
-          <li>Free corrected reissue if any error is reported</li>
+          <li>Free corrected reissue or refund if an error is reported within 30 days</li>
         </ul>
         <div class="price-foot">
           <a id="paddle-checkout-btn" class="btn btn-primary btn-block" href="#">Get Practice Test 1 — $19</a>
@@ -368,7 +386,7 @@
       <div class="faq-list">
         <details class="faq-item">
           <summary>Is this an official College Board product?</summary>
-          <div class="faq-answer">No. 1600 SAT Lab is an independent test prep publisher. We are not affiliated with, endorsed by, or sponsored by the College Board. SAT&reg; is a trademark of the College Board.</div>
+          <div class="faq-answer">No. 1600 SAT Lab is an independent test prep publisher. We are not affiliated with, endorsed by, or sponsored by the College Board. SAT&reg; and Digital SAT&reg; are trademarks of the College Board.</div>
         </details>
         <details class="faq-item">
           <summary>How is the test delivered?</summary>
@@ -422,7 +440,7 @@
       </div>
       <div class="footer-bottom">
         <span>&copy; 2026 1600 SAT Lab. All rights reserved.</span>
-        <span class="disclaimer">Not affiliated with or endorsed by the College Board. SAT&reg; is a trademark of the College Board.</span>
+        <span class="disclaimer">Not affiliated with, endorsed by, or sponsored by the College Board. SAT&reg; and Digital SAT&reg; are trademarks of the College Board.</span>
       </div>
     </div>
   </footer>
