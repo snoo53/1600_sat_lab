@@ -445,5 +445,49 @@
     </div>
   </footer>
 
+  <!-- ===== Paddle checkout (Paddle Billing v2) ===== -->
+  <script src="https://cdn.paddle.com/paddle/v2/paddle.js"></script>
+  <script>
+    (function () {
+      // ====================== PADDLE CONFIG ======================
+      // Fill in these two values from your Paddle dashboard, then checkout goes live:
+      //   PADDLE_CLIENT_TOKEN → Paddle > Developer tools > Authentication > Client-side token (starts with "live_")
+      //   PADDLE_PRICE_ID     → Paddle > Catalog > Products > your $19 price (starts with "pri_")
+      // While testing with a sandbox account, use your "test_" token and set PADDLE_SANDBOX = true.
+      var PADDLE_CLIENT_TOKEN = "REPLACE_WITH_PADDLE_CLIENT_TOKEN";
+      var PADDLE_PRICE_ID     = "REPLACE_WITH_PADDLE_PRICE_ID";
+      var PADDLE_SANDBOX      = false;
+      // ===========================================================
+
+      var configured =
+        PADDLE_CLIENT_TOKEN.indexOf("REPLACE_") === -1 &&
+        PADDLE_PRICE_ID.indexOf("REPLACE_") === -1;
+
+      if (configured && window.Paddle) {
+        if (PADDLE_SANDBOX) { Paddle.Environment.set("sandbox"); }
+        Paddle.Initialize({ token: PADDLE_CLIENT_TOKEN });
+      }
+
+      var btn = document.getElementById("paddle-checkout-btn");
+      if (btn) {
+        btn.addEventListener("click", function (e) {
+          e.preventDefault();
+          if (!configured || !window.Paddle) {
+            alert("Checkout is being set up. To purchase Practice Test 1 right now, email support@1600satlab.com and we'll send you a payment link. Thanks for your patience!");
+            return;
+          }
+          Paddle.Checkout.open({
+            settings: {
+              displayMode: "overlay",
+              theme: "light",
+              successUrl: "https://1600satlab.com/thank-you.html"
+            },
+            items: [{ priceId: PADDLE_PRICE_ID, quantity: 1 }]
+          });
+        });
+      }
+    })();
+  </script>
+
 </body>
 </html>
