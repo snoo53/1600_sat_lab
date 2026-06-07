@@ -352,50 +352,25 @@ h2 {
   max-width: 520px;
 }
 
-#mailerlite-form {
-  background: var(--white);
-  border-radius: var(--radius);
-  padding: 28px;
-  max-width: 480px;
+/* MailerLite embedded form — center it and match the site's card styling */
+.lead .ml-form-embedContainer {
+  max-width: 440px;
   margin: 0 auto;
-  color: var(--gray-500);
-  box-shadow: var(--shadow-lg);
-  min-height: 120px;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  align-items: stretch;
-  justify-content: center;
 }
 
-/* Fallback styling for the embed placeholder form */
-#mailerlite-form .ml-fallback-label {
-  text-align: left;
-  font-size: 0.85rem;
-  font-weight: 600;
-  color: var(--gray-700);
+.lead .ml-form-embedContainer .ml-form-embedWrapper {
+  box-shadow: var(--shadow-lg) !important;
+  border-radius: var(--radius) !important;
 }
 
-#mailerlite-form input[type="email"],
-#mailerlite-form input[type="text"] {
-  width: 100%;
-  padding: 14px 16px;
-  border: 1.5px solid var(--gray-200);
-  border-radius: 10px;
-  font-size: 1rem;
-  font-family: inherit;
-  color: var(--text);
+.lead .ml-form-embedContainer .ml-form-embedBody {
+  padding: 28px 28px 8px !important;
 }
 
-#mailerlite-form input:focus {
+.lead .ml-form-embedContainer .ml-form-fieldRow input:focus {
   outline: none;
-  border-color: var(--blue);
+  border-color: var(--blue) !important;
   box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
-}
-
-#mailerlite-form .ml-note {
-  font-size: 0.8rem;
-  color: var(--gray-400);
 }
 
 /* ===== Pricing ===== */
