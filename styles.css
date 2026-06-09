@@ -102,6 +102,17 @@ img {
   width: 100%;
 }
 
+/* Preserve our button look when it's also a Gumroad overlay trigger */
+a.gumroad-button.btn-primary {
+  background: var(--blue) !important;
+  color: var(--white) !important;
+  font-family: inherit !important;
+}
+
+a.gumroad-button.btn-primary:hover {
+  background: var(--blue-dark) !important;
+}
+
 /* ===== Header / Nav ===== */
 .site-header {
   position: sticky;
