@@ -13,10 +13,10 @@ const SALES_ENABLED = true;
 
 // Single source of truth for the Practice Test 1 checkout link.
 // Every buy button on the site derives its href from this constant.
-// TODO(owner): replace with an anonymised Gumroad permalink — the current
-// host "sunwoolee.gumroad.com" exposes the owner's real name and breaks the
-// anonymous-brand rule. See SETUP.md.
-const GUMROAD_TEST1_URL = "https://sunwoolee.gumroad.com/l/rqsfzh?wanted=true";
+// TODO(owner): the storefront must be renamed off the personal "sunwoolee"
+// account before this goes live — see SETUP.md for the exact steps. Paste
+// the resulting permalink (from the renamed profile) here.
+const GUMROAD_TEST1_URL = "https://TODO-anonymous-store.gumroad.com/l/TODO";
 
 // Where a purchase CTA points when SALES_ENABLED is false.
 const WAITLIST_URL = "/sample/#waitlist";
