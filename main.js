@@ -13,10 +13,13 @@ const SALES_ENABLED = true;
 
 // Single source of truth for the Practice Test 1 checkout link.
 // Every buy button on the site derives its href from this constant.
-// TODO(owner): the storefront must be renamed off the personal "sunwoolee"
-// account before this goes live — see SETUP.md for the exact steps. Paste
-// the resulting permalink (from the renamed profile) here.
-const GUMROAD_TEST1_URL = "https://TODO-anonymous-store.gumroad.com/l/TODO";
+// This is a Stripe Payment Link (buy.stripe.com/...) — a plain URL, not a
+// script-based overlay, so the buy button is a REAL link that works even if
+// JavaScript never loads. Create it in Stripe Dashboard -> Payment Links,
+// set the "public business name" shown at checkout to "1600 SAT Lab" (not
+// your legal name), and set its success URL to https://1600satlab.com/thank-you/.
+// TODO(owner): paste the real Payment Link URL here. See SETUP.md.
+const STRIPE_PAYMENT_LINK_URL = "https://buy.stripe.com/TODO_PAYMENT_LINK";
 
 // Where a purchase CTA points when SALES_ENABLED is false.
 const WAITLIST_URL = "/sample/#waitlist";
@@ -51,16 +54,14 @@ const GA_MEASUREMENT_ID = "TODO_GA4_ID";
       var cta = buyCtas[i];
 
       if (SALES_ENABLED) {
-        // Derive every buy link from the single constant.
-        cta.setAttribute("href", GUMROAD_TEST1_URL);
-        cta.classList.add("gumroad-button");
+        // Derive every buy link from the single constant. Stripe Payment
+        // Links need no script and no special class — it's just a link.
+        cta.setAttribute("href", STRIPE_PAYMENT_LINK_URL);
         cta.removeAttribute("data-waitlist-active");
       } else {
         var label =
           cta.getAttribute("data-waitlist-label") || WAITLIST_LABEL_DEFAULT;
         cta.setAttribute("href", WAITLIST_URL);
-        // Drop the Gumroad hook so the overlay script ignores this element.
-        cta.classList.remove("gumroad-button");
         cta.setAttribute("data-waitlist-active", "true");
         cta.textContent = label;
       }
