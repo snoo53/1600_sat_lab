@@ -17,7 +17,11 @@ const SALES_ENABLED = true;
 // script-based overlay, so the buy button is a REAL link that works even if
 // JavaScript never loads. Create it in Stripe Dashboard -> Payment Links,
 // set the "public business name" shown at checkout to "1600 SAT Lab" (not
-// your legal name), and set its success URL to https://1600satlab.com/thank-you/.
+// your legal name), and set its success URL to
+// https://1600satlab.com/thank-you/?session_id={CHECKOUT_SESSION_ID}
+// (Stripe substitutes the session ID at redirect time — it powers the
+// purchase-conversion event below and lets Google de-duplicate a refreshed
+// thank-you page from a real second sale).
 // TODO(owner): paste the real Payment Link URL here. See SETUP.md.
 const STRIPE_PAYMENT_LINK_URL = "https://buy.stripe.com/TODO_PAYMENT_LINK";
 
@@ -40,6 +44,7 @@ const GA_MEASUREMENT_ID = "TODO_GA4_ID";
     applySalesState();
     initNavToggle();
     initAnalytics();
+    trackPurchaseIfThankYouPage();
   });
 
   /* ------------------------------------------------------------------------
@@ -179,5 +184,30 @@ const GA_MEASUREMENT_ID = "TODO_GA4_ID";
 
   function ctaLocation(el) {
     return el.getAttribute("data-cta-location") || "unknown";
+  }
+
+  /* ------------------------------------------------------------------------
+     Purchase conversion — fires once, on the thank-you page only.
+     Reads the Stripe Checkout session ID from the URL (if the Payment
+     Link's success URL includes ?session_id={CHECKOUT_SESSION_ID}) so a
+     page refresh doesn't count as a second sale. Link Google Ads to this
+     GA4 property and import the "purchase" event as a conversion action —
+     no separate AW-xxxx pixel needed on this page.
+     ------------------------------------------------------------------------ */
+
+  function trackPurchaseIfThankYouPage() {
+    var marker = document.querySelector("[data-purchase-value]");
+    if (!marker) return;
+
+    var value = parseFloat(marker.getAttribute("data-purchase-value")) || 0;
+    var params = new URLSearchParams(window.location.search);
+    var sessionId = params.get("session_id") || "";
+
+    track("purchase", {
+      transaction_id: sessionId,
+      value: value,
+      currency: "USD",
+      items: [{ item_name: "Digital SAT Practice Test 1", price: value }]
+    });
   }
 })();
