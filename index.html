@@ -152,6 +152,11 @@
             <input type="hidden" name="anticsrf" value="true">
             <button class="btn btn-primary btn-block" type="submit">Send me the 5 questions</button>
           </form>
+          <p class="form-success" data-form-success hidden>Check your inbox. If a confirmation link arrives first, click it &mdash; the sample follows straight after.</p>
+          <!-- Submission sink. main.js retargets the form here so the JSONP
+               endpoint's raw {"success":true} response never becomes a visible
+               tab. Without JS the form falls back to target="_blank" above. -->
+          <iframe class="form-sink" name="ml-sink" title="Form submission target" tabindex="-1" aria-hidden="true"></iframe>
         </div>
         <p class="fineprint">We will also email you when Test 2 ships. Unsubscribe anytime.</p>
       </div>

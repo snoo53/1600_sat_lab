@@ -58,6 +58,7 @@ const GA_MEASUREMENT_ID = "TODO_GA4_ID";
   document.addEventListener("DOMContentLoaded", function () {
     applySalesState();
     initPaddle();
+    initCaptureForms();
     initNavToggle();
     initAnalytics();
     trackPurchaseIfThankYouPage();
@@ -143,6 +144,41 @@ const GA_MEASUREMENT_ID = "TODO_GA4_ID";
     var els = document.querySelectorAll(selector);
     for (var i = 0; i < els.length; i++) {
       els[i].hidden = !show;
+    }
+  }
+
+  /* ------------------------------------------------------------------------
+     Email capture
+     The MailerLite JSONP endpoint replies with raw {"success":true}. The
+     static form carries target="_blank" so it still submits with JS off,
+     but that means the reply would open as a visible tab full of JSON.
+     With JS we retarget the POST into a hidden iframe and show an inline
+     confirmation instead.
+     ------------------------------------------------------------------------ */
+
+  function initCaptureForms() {
+    var forms = document.querySelectorAll("form[data-capture-form]");
+
+    for (var i = 0; i < forms.length; i++) {
+      (function (form) {
+        var slot = form.parentNode;
+        var sink = slot.querySelector("iframe.form-sink");
+        // Only retarget if the sink actually exists, otherwise leave the
+        // no-JS behaviour alone rather than breaking submission entirely.
+        if (sink) form.setAttribute("target", sink.getAttribute("name"));
+
+        form.addEventListener("submit", function () {
+          var ok = slot.querySelector("[data-form-success]");
+          if (!ok) return;
+          // The POST is fire-and-forget into the iframe; we cannot read a
+          // cross-origin response, so confirm optimistically once the
+          // browser has had a moment to dispatch it.
+          window.setTimeout(function () {
+            form.hidden = true;
+            ok.hidden = false;
+          }, 500);
+        });
+      })(forms[i]);
     }
   }
 

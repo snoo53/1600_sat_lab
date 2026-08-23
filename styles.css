@@ -1011,6 +1011,24 @@ th.num {
   color: var(--text-faint);
 }
 
+/* Hidden target for the email form's POST. The MailerLite JSONP endpoint
+   answers with raw JSON, so the response must land somewhere invisible
+   rather than in a real tab. */
+.form-sink {
+  display: none;
+}
+
+.form-success {
+  margin-top: var(--sp-4);
+  padding: var(--sp-4);
+  border: 1px solid #a7f3d0;
+  border-radius: var(--radius);
+  background: var(--live-wash);
+  color: var(--live);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-medium);
+}
+
 /* Fallback form styling (used if the MailerLite embed is absent) */
 .fallback-form {
   display: grid;
