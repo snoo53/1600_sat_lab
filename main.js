@@ -7,9 +7,12 @@
    Configuration — the only values you should ever need to edit
    -------------------------------------------------------------------------- */
 
-// Flip to false to convert every checkout CTA into a waitlist signup.
-// Price displays become "Coming soon". No other edit is required.
-const SALES_ENABLED = true;
+// Flip to true once STRIPE_PAYMENT_LINK_URL below is a real Payment Link.
+// Currently false because that URL is still a TODO placeholder — flipping
+// this on before then would put a live, clickable "$19" button on the site
+// that goes nowhere. Price displays read "Coming soon" while this is false.
+// No other edit is required either direction.
+const SALES_ENABLED = false;
 
 // Single source of truth for the Practice Test 1 checkout link.
 // Every buy button on the site derives its href from this constant.
