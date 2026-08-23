@@ -84,14 +84,9 @@ together or the site will contradict itself:
 | # | File | Line | Change |
 |---|---|---|---|
 | 1 | `main.js` | 15 | `SALES_ENABLED = false` → `true` |
-| 2 | `tests/practice-test-1/index.html` | 47 | JSON-LD `"availability"`: `OutOfStock` → `InStock` |
-| 3 | `index.html`, `tests/index.html`, `tests/practice-test-1/index.html` (×2) | buy CTAs | `href="/sample/#waitlist" data-waitlist-active="true">Get notified when Test 1 is back</a>` → `href="mailto:support@1600satlab.com?subject=Practice%20Test%201%20%E2%80%94%20purchase%20request">Get Practice Test 1 &mdash; $19</a>` |
+| 2 | `index.html` | Product JSON-LD | `"availability"`: `OutOfStock` → `InStock` |
+| 3 | `index.html` (×2 — hero and pricing) | buy CTAs | `href="/sample/#waitlist" data-waitlist-active="true">Get notified when Test 1 is back</a>` → `href="mailto:support@1600satlab.com?subject=Practice%20Test%201%20%E2%80%94%20purchase%20request">Get Practice Test 1 &mdash; $19</a>` |
 | 4 | — | — | Nothing else. Badges flip automatically via `data-when-sales-on` / `data-when-sales-off`. |
-
-**Item 2 matters more than it looks.** JSON-LD is what Google reads for rich
-results. Leaving it `InStock` while sales are off advertises a buyable $19 product
-that cannot be bought; leaving it `OutOfStock` after turning sales on suppresses
-your own listing.
 
 **Item 2 matters more than it looks.** JSON-LD is what Google reads for search
 rich results. Leaving it `InStock` while sales are off advertises a buyable $19
@@ -135,24 +130,18 @@ Then link Google Ads → GA4 (Ads → Tools → Linked accounts) and import both
 
 ### 3.1 통신판매업신고번호
 
-**Files:** all 13 pages, in the footer identity block. Search for `통신판매업신고번호`.
+**Files:** every page, in the footer identity block. Search for `통신판매업신고번호`.
 Currently renders as `준비 중` ("in preparation") with a `TODO(owner)` comment.
 
 | File | Line |
 |---|---|
-| `index.html` | 329 |
-| `tests/index.html` | 179 |
-| `tests/practice-test-1/index.html` | 411 |
-| `sample/index.html` | 249 |
-| `about/index.html` | 129 |
-| `faq/index.html` | 257 |
-| `terms/index.html` | 75 **and** 214 (body block + footer) |
-| `privacy/index.html` | 233 |
-| `refund/index.html` | 140 |
-| `thank-you/index.html` | 112 |
-| `blog/index.html` | 118 |
-| `blog/example-post/index.html` | 132 |
-| `404.html` | 114 |
+| `index.html` | 375 |
+| `terms/index.html` | 75 |
+| `terms/index.html` | 215 |
+| `privacy/index.html` | 232 |
+| `refund/index.html` | 139 |
+| `thank-you/index.html` | 111 |
+| `404.html` | 113 |
 
 **Either** file for 통신판매업 신고 at 정부24 and paste the number, **or** confirm
 you are exempt and replace the label with the exemption wording. Do not invent a
@@ -163,15 +152,7 @@ open questions for the 국세청 126 call.
 
 ## 4. Content placeholders
 
-### 4.1 Blog
-
-`blog/index.html` line 63 carries a `TODO(owner)` comment. `/blog/example-post/`
-is an explicit placeholder that says so in its own body text. It is excluded from
-`sitemap.xml` and disallowed in `robots.txt`, so it will not be indexed — safe to
-leave until real articles exist. Topic candidates are in
-`sat_business/marketing/google_ads_test.md` under "Organic / SEO".
-
-### 4.2 Master PDFs still carry the old refund text
+### 4.1 Master PDFs still carry the old refund text
 
 **Not a website file, but it contradicts the website.** The disclaimer bound into
 the master PDFs in `sat_business/masters/` and `1600satlab_sources/masters/` still
@@ -179,7 +160,7 @@ states the older refund terms. The site now says **all sales final, no refunds**
 Regenerate those PDFs before the next sale ships, or a buyer will hold a document
 that contradicts the published policy.
 
-### 4.3 Known cosmetic gap while sales are off
+### 4.2 Known cosmetic gap while sales are off
 
 With JavaScript **disabled** and sales off, the price still reads "$19" next to a
 "Get notified" button (JS rewrites it to "Coming soon", static HTML can't). Not
@@ -195,8 +176,8 @@ purchasable yet — so this is left as-is. It resolves itself when sales turn on
   Search Console TXT record is additive and safe.
 - MailerLite form is wired to the real account (`2413380`) and posts directly, so
   it works with JavaScript disabled.
-- All 13 routes return 200; every internal link resolves; no `.html` in nav.
-- Footer is byte-identical across all 13 pages; College Board disclaimer appears
+- All 6 routes return 200; every internal link and on-page anchor resolves.
+- Footer is byte-identical across all 6 pages; College Board disclaimer appears
   exactly once per page.
 - Difficulty distribution sums to 98 and matches the shipped answer key.
 - All four tables sit inside `overflow-x: auto` containers, so there is no

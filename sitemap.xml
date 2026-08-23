@@ -1,67 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
   Public, indexable pages only.
-  Deliberately excluded: /thank-you/ (noindex, post-purchase), /404.html (error page),
-  /blog/example-post/ (placeholder, not real content), and the legacy .html redirect stubs.
+  Excluded: /thank-you/ (noindex, post-purchase), /404.html, and the legacy
+  .html redirect stubs kept for links inside already-delivered PDFs.
 -->
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://1600satlab.com/</loc>
-    <lastmod>2026-08-21</lastmod>
+    <lastmod>2026-08-23</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://1600satlab.com/tests/</loc>
-    <lastmod>2026-08-21</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://1600satlab.com/tests/practice-test-1/</loc>
-    <lastmod>2026-08-21</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://1600satlab.com/sample/</loc>
-    <lastmod>2026-08-21</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://1600satlab.com/about/</loc>
-    <lastmod>2026-08-21</lastmod>
-    <changefreq>yearly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  <url>
-    <loc>https://1600satlab.com/faq/</loc>
-    <lastmod>2026-08-21</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://1600satlab.com/blog/</loc>
-    <lastmod>2026-08-21</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.4</priority>
-  </url>
-  <url>
     <loc>https://1600satlab.com/terms/</loc>
-    <lastmod>2026-08-21</lastmod>
+    <lastmod>2026-08-23</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
   </url>
   <url>
     <loc>https://1600satlab.com/privacy/</loc>
-    <lastmod>2026-08-21</lastmod>
+    <lastmod>2026-08-23</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
   </url>
   <url>
     <loc>https://1600satlab.com/refund/</loc>
-    <lastmod>2026-08-21</lastmod>
+    <lastmod>2026-08-23</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
   </url>

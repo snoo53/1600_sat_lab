@@ -1216,6 +1216,11 @@ th.num {
   font-size: var(--fs-sm);
 }
 
+/* Centre a fixed-width block (e.g. the pricing card) */
+.mx-auto {
+  margin-inline: auto;
+}
+
 .mt-6 {
   margin-top: var(--sp-6);
 }

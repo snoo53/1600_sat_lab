@@ -41,7 +41,7 @@ const BUY_FALLBACK_MAILTO =
   "?subject=Practice%20Test%201%20%E2%80%94%20purchase%20request";
 
 // Where a purchase CTA points when SALES_ENABLED is false.
-const WAITLIST_URL = "/sample/#waitlist";
+const WAITLIST_URL = "/#sample";
 const WAITLIST_LABEL_DEFAULT = "Get notified when it ships";
 
 // TODO(owner): replace with the real GA4 measurement ID, e.g. "G-XXXXXXXXXX".
