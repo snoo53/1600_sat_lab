@@ -21,6 +21,13 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
 <link rel="stylesheet" href="/styles.css">
 <script>document.documentElement.className=document.documentElement.className.replace(/\bno-js\b/,"js");</script>
+<!-- NOTE: "availability" below must track SALES_ENABLED in /main.js.
+     Sales OFF -> https://schema.org/OutOfStock (current).
+     Sales ON  -> https://schema.org/InStock.
+     JSON-LD is static markup, so main.js cannot toggle it — Google reads
+     the raw HTML. Flipping SALES_ENABLED without editing this line would
+     advertise a buyable $19 product in search results that cannot be
+     bought. See SETUP.md. -->
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -37,7 +44,7 @@
     "@type": "Offer",
     "price": "19",
     "priceCurrency": "USD",
-    "availability": "https://schema.org/InStock",
+    "availability": "https://schema.org/OutOfStock",
     "url": "https://1600satlab.com/tests/practice-test-1/"
   }
 }
@@ -73,7 +80,7 @@
 
   <section class="page-hero bg-navy">
     <div class="container">
-      <p><span class="badge badge-live">Live</span></p>
+      <p><span class="badge badge-live" data-when-sales-on hidden>Live</span><span class="badge badge-pending" data-when-sales-off>Available soon</span></p>
       <h1>Practice Test 1 &mdash; Advanced Set</h1>
       <p>One full-length original test, 98 questions across four modules, written to the 1500+ band. Every item is original; none is adapted from College Board material.</p>
       <div class="product-price"><span data-price>$19</span></div>

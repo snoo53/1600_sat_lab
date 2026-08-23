@@ -110,6 +110,14 @@
   padding: 0;
 }
 
+/* The [hidden] attribute must beat any component `display` rule.
+   main.js toggles [hidden] on the data-when-sales-on/off blocks; without
+   this, a rule like `.badge { display: inline-block }` would override the
+   UA default and render both the sales-on and sales-off variants at once. */
+[hidden] {
+  display: none !important;
+}
+
 html {
   -webkit-text-size-adjust: 100%;
   scroll-behavior: smooth;
