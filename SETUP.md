@@ -152,6 +152,30 @@ open questions for the 국세청 126 call.
 
 ## 4. Content placeholders
 
+### 4.0 Free sample pack — Edition 1.1, and where it is actually served from
+
+The canonical file is `downloads/1600-sat-lab-free-sample.pdf` in this repo,
+currently **Edition 1.1**. Serve it from
+`https://1600satlab.com/downloads/1600-sat-lab-free-sample.pdf` and nowhere else.
+
+**Check this before your next MailerLite send.** If the automation links to a copy
+uploaded into MailerLite's own file manager, that copy is frozen at whatever edition
+was uploaded — replacing the repo file will not change what subscribers receive.
+Point the email at the URL above instead, and updating the sample becomes a git push.
+
+Edition 1.1 fixed two real defects that are in Edition 1.0:
+
+- the correct answer was **C on 4 of the 5 questions**, which is exactly the
+  answer-position clustering the site claims every item is audited against;
+- the cover said "1 Band 6, 2 Band 7" while the answer key labelled 2 Band 6 and
+  1 Band 7.
+
+It also adds trap-type labels to every distractor, which the site now cites by name.
+
+The file is `Disallow`ed in `robots.txt` so it stays out of search results; that does
+not affect direct links from email.
+
+
 ### 4.1 Master PDFs still carry the old refund text
 
 **Not a website file, but it contradicts the website.** The disclaimer bound into
