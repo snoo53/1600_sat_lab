@@ -8,4 +8,7 @@ Disallow: /thank-you.html
 # The free sample is delivered by email. Keep the file out of search results.
 Disallow: /downloads/
 
+# Internal setup notes — not content.
+Disallow: /SETUP.md
+
 Sitemap: https://1600satlab.com/sitemap.xml

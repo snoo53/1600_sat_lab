@@ -32,8 +32,10 @@ const PADDLE_SANDBOX      = false;
 
 **What to do, in order:**
 
-1. Sign up at paddle.com for **Paddle Billing** under the registered business —
-   **1600 에스에이티 랩**, 사업자등록번호 **214-53-01036**.
+1. Sign up at paddle.com for **Paddle Billing** under the registered business.
+   The 상호 and 사업자등록번호 are on the 사업자등록증 in the private ops folder
+   (`1600satlab_sources/official_documents/`) — deliberately not repeated here,
+   because this file is served publicly from the site root.
 2. Complete seller verification. **This takes a few days and Paddle is strict.**
    It reviews your live site, so `/terms/`, `/privacy/` and `/refund/` being
    published and consistent works in your favour. Present the business as purely
@@ -128,25 +130,27 @@ Then link Google Ads → GA4 (Ads → Tools → Linked accounts) and import both
 
 ## 3. Legal — required before advertising in Korea
 
-### 3.1 통신판매업신고번호
+### 3.1 Business identity block — removed from the site 2026-08-23
 
-**Files:** every page, in the footer identity block. Search for `통신판매업신고번호`.
-Currently renders as `준비 중` ("in preparation") with a `TODO(owner)` comment.
+The footer identity block (Korean 상호, 사업자등록번호, 통신판매업신고번호 placeholder
+and the registered address) was **removed from all pages** at the owner's request.
+The registered address is residential, and publishing an apartment and unit number
+on a public site is a real exposure for an anonymous brand.
 
-| File | Line |
-|---|---|
-| `index.html` | 375 |
-| `terms/index.html` | 75 |
-| `terms/index.html` | 215 |
-| `privacy/index.html` | 232 |
-| `refund/index.html` | 139 |
-| `thank-you/index.html` | 111 |
-| `404.html` | 113 |
+What the pages say now: independent publisher, sole proprietorship registered in the
+Republic of Korea, Paddle as merchant of record, support@1600satlab.com. The terms
+page adds that full registration details are available on request.
 
-**Either** file for 통신판매업 신고 at 정부24 and paste the number, **or** confirm
-you are exempt and replace the label with the exemption wording. Do not invent a
-number. Note that 간이과세자 with low revenue may be exempt — this was one of the
-open questions for the 국세청 126 call.
+**When this has to come back.** Korean 전자상거래법 requires a 통신판매업자 to display
+identity details, so if you ever (a) file 통신판매업 신고, or (b) sell directly to
+Korean consumers rather than through Paddle as merchant of record, the block must be
+restored. While Paddle is the merchant of record, Paddle is the legal seller on each
+transaction and shows its own identity at checkout, which is what carries that
+disclosure for now.
+
+If you need a public address without using your home, the usual routes are a
+비상주 사무실 (virtual office) or a 우편함 service; either gives you an address you can
+publish and re-register the business to.
 
 ---
 
