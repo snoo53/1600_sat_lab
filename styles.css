@@ -423,12 +423,19 @@ code {
   color: var(--navy);
 }
 
-.bg-navy .btn-ghost {
-  border-color: var(--navy-line);
+/* Ghost buttons on ANY dark surface. .hero and .page-hero are navy but do
+   not carry .bg-navy, so without them listed here the button inherits
+   color: var(--navy) and the label goes invisible against the background. */
+.bg-navy .btn-ghost,
+.hero .btn-ghost,
+.page-hero .btn-ghost {
+  border-color: rgba(255, 255, 255, 0.35);
   color: var(--white);
 }
 
-.bg-navy .btn-ghost:hover {
+.bg-navy .btn-ghost:hover,
+.hero .btn-ghost:hover,
+.page-hero .btn-ghost:hover {
   border-color: var(--blue-light);
   background: var(--navy-soft);
   color: var(--white);
@@ -980,6 +987,8 @@ th.num {
   padding: clamp(1.5rem, 1rem + 2vw, 2.5rem);
   box-shadow: var(--shadow);
   max-width: 34rem;
+  /* Fixed-width block — centre it rather than letting it hug the gutter. */
+  margin-inline: auto;
 }
 
 .capture h2,
@@ -1214,11 +1223,6 @@ th.num {
 
 .text-sm {
   font-size: var(--fs-sm);
-}
-
-/* Centre a fixed-width block (e.g. the pricing card) */
-.mx-auto {
-  margin-inline: auto;
 }
 
 .mt-6 {
