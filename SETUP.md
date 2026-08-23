@@ -9,38 +9,66 @@ Last updated: 23 August 2026.
 
 ## 1. BLOCKING — the site cannot sell anything until these are done
 
-### 1.1 Stripe Payment Link
+### 1.1 Paddle account and keys
 
-**File:** `main.js` line 29
+**File:** `main.js` lines 24-26
 ```js
-const STRIPE_PAYMENT_LINK_URL = "https://buy.stripe.com/TODO_PAYMENT_LINK";
+const PADDLE_CLIENT_TOKEN = "TODO_PADDLE_CLIENT_TOKEN";
+const PADDLE_PRICE_ID     = "TODO_PADDLE_PRICE_ID";
+const PADDLE_SANDBOX      = false;
 ```
+
+**Why Paddle and not Stripe or Gumroad** (decided 23 Aug 2026, after research):
+
+- **Stripe cannot pay out to Korean bank accounts.** It can accept payments from
+  customers anywhere, but a Korea-registered business cannot receive the money.
+  This is not a configuration problem and cannot be worked around.
+- **Gumroad is a payout risk and costs double.** It ended PayPal payouts in late
+  2024, routes direct deposits through Stripe Connect (same Korea limitation),
+  and supports neither Payoneer nor Wise. Its fee is 10% + $0.30 (≈$2.20 on a $19
+  sale) versus Paddle's ≈$1.45.
+- **Paddle supports Korean sellers, and eBooks/PDFs are an explicitly approved
+  product category.**
 
 **What to do, in order:**
 
-1. Create a Stripe account under the registered business — **1600 에스에이티 랩**,
-   사업자등록번호 **214-53-01036**.
-2. In **Settings → Business → Public details**, set the **public business name to
-   `1600 SAT Lab`**. This is the name shown on the checkout page and on the card
-   statement. It must NOT be the owner's legal name — the brand is anonymous, and
-   the checkout page is the single most likely place for that to leak.
-3. Create the product: **$19 USD, one-time**.
-4. Create a **Payment Link** for it (Dashboard → Payment Links).
-5. Set the Payment Link's **success URL** to exactly:
-   ```
-   https://1600satlab.com/thank-you/?session_id={CHECKOUT_SESSION_ID}
-   ```
-   The `{CHECKOUT_SESSION_ID}` part is literal — Stripe substitutes it at redirect.
-   It is what makes the purchase-conversion event de-duplicate correctly (see 2.1).
-6. Paste the resulting `https://buy.stripe.com/...` URL over the placeholder.
+1. Sign up at paddle.com for **Paddle Billing** under the registered business —
+   **1600 에스에이티 랩**, 사업자등록번호 **214-53-01036**.
+2. Complete seller verification. **This takes a few days and Paddle is strict.**
+   It reviews your live site, so `/terms/`, `/privacy/` and `/refund/` being
+   published and consistent works in your favour. Present the business as purely
+   digital-goods — Paddle rejects mixed models that include human consulting or
+   services.
+3. Set the **public business name shown at checkout to `1600 SAT Lab`** — not the
+   owner's legal name. The checkout page is the single most likely place for the
+   anonymous brand to leak.
+4. Add and verify the domain **1600satlab.com** under Checkout → domain approval.
+   Paddle.js only runs on approved domains, so checkout silently fails without it.
+5. Create the product with a **one-time price of $19 USD**. Copy its **Price ID**
+   (`pri_...`) into `PADDLE_PRICE_ID`.
+6. Copy your **client-side token** (Developer tools → Authentication →
+   Client-side tokens, `live_...`) into `PADDLE_CLIENT_TOKEN`.
+7. Test with a sandbox account first: use a `test_` token and sandbox `pri_` id,
+   set `PADDLE_SANDBOX = true`, pay with Paddle's test card, and confirm the
+   overlay opens and redirects to `/thank-you/`. Then switch to live values and
+   set `PADDLE_SANDBOX` back to `false`.
 
 **Until this is done:** every buy button reads "Get notified when Test 1 is back"
 and links to the waitlist, because `SALES_ENABLED` is `false` (see 1.2).
 
-> **Why a Payment Link and not Stripe's `<stripe-buy-button>` web component:** the
-> Payment Link is a plain `<a href>`, so checkout still works with JavaScript
-> disabled. The buy-button component renders nothing without JS, which would make
-> the checkout itself JS-gated. Don't switch to it.
+> ### Known limitation: checkout requires JavaScript
+>
+> Every other part of every page works with JS disabled. **Checkout does not.**
+> Paddle Billing has no static checkout URL — the overlay is opened by `paddle.js`
+> against a transaction Paddle creates, so there is nothing to put in a plain
+> `href`. This is a real regression from the Stripe Payment Link approach this
+> replaced, and it is not fixable while using Paddle.
+>
+> The mitigation: each buy button's static `href` is a **mailto to
+> support@1600satlab.com** with a purchase-request subject line. A visitor with JS
+> disabled gets a working way to reach you rather than a dead button, and you can
+> send them a Paddle invoice manually. `main.js` upgrades the click to the overlay
+> whenever Paddle is actually available.
 
 ### 1.2 Turning sales ON — this is NOT a one-line change
 
@@ -49,16 +77,21 @@ and links to the waitlist, because `SALES_ENABLED` is `false` (see 1.2).
 const SALES_ENABLED = false;
 ```
 
-Flipping this to `true` handles the buttons and prices at runtime, but **three
-things are static HTML that JavaScript cannot reach.** All four must change
+Flipping this to `true` handles the buttons and prices at runtime, but **two
+things are static HTML that JavaScript cannot reach.** All three must change
 together or the site will contradict itself:
 
 | # | File | Line | Change |
 |---|---|---|---|
 | 1 | `main.js` | 15 | `SALES_ENABLED = false` → `true` |
 | 2 | `tests/practice-test-1/index.html` | 47 | JSON-LD `"availability"`: `OutOfStock` → `InStock` |
-| 3 | `index.html`, `tests/index.html`, `tests/practice-test-1/index.html` (×2) | buy CTAs | `href="/sample/#waitlist" data-waitlist-active="true">Get notified when Test 1 is back</a>` → `href="https://buy.stripe.com/YOUR_LINK">Get Practice Test 1 &mdash; $19</a>` |
+| 3 | `index.html`, `tests/index.html`, `tests/practice-test-1/index.html` (×2) | buy CTAs | `href="/sample/#waitlist" data-waitlist-active="true">Get notified when Test 1 is back</a>` → `href="mailto:support@1600satlab.com?subject=Practice%20Test%201%20%E2%80%94%20purchase%20request">Get Practice Test 1 &mdash; $19</a>` |
 | 4 | — | — | Nothing else. Badges flip automatically via `data-when-sales-on` / `data-when-sales-off`. |
+
+**Item 2 matters more than it looks.** JSON-LD is what Google reads for rich
+results. Leaving it `InStock` while sales are off advertises a buyable $19 product
+that cannot be bought; leaving it `OutOfStock` after turning sales on suppresses
+your own listing.
 
 **Item 2 matters more than it looks.** JSON-LD is what Google reads for search
 rich results. Leaving it `InStock` while sales are off advertises a buyable $19
@@ -92,7 +125,7 @@ Once live, two events fire on their own — no extra tags to install:
 | Event | Fires when | Import as |
 |---|---|---|
 | `generate_lead` | MailerLite sample or waitlist form submitted | conversion, value $0 |
-| `purchase` | `/thank-you/` loads, with `session_id` as the transaction ID | conversion, value $19 |
+| `purchase` | `/thank-you/` loads, with Paddle's `_ptxn` as the transaction ID | conversion, value $19 |
 
 Then link Google Ads → GA4 (Ads → Tools → Linked accounts) and import both.
 

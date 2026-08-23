@@ -7,26 +7,38 @@
    Configuration — the only values you should ever need to edit
    -------------------------------------------------------------------------- */
 
-// Flip to true once STRIPE_PAYMENT_LINK_URL below is a real Payment Link.
-// Currently false because that URL is still a TODO placeholder — flipping
-// this on before then would put a live, clickable "$19" button on the site
-// that goes nowhere. Price displays read "Coming soon" while this is false.
-// No other edit is required either direction.
+// Master switch for selling. While false, every buy CTA becomes a waitlist
+// signup and every price reads "Coming soon".
+// Currently false because the Paddle keys below are still placeholders.
+// Turning this on is NOT a one-line change — see SETUP.md §1.2 for the
+// three static-markup edits that must happen alongside it.
 const SALES_ENABLED = false;
 
-// Single source of truth for the Practice Test 1 checkout link.
-// Every buy button on the site derives its href from this constant.
-// This is a Stripe Payment Link (buy.stripe.com/...) — a plain URL, not a
-// script-based overlay, so the buy button is a REAL link that works even if
-// JavaScript never loads. Create it in Stripe Dashboard -> Payment Links,
-// set the "public business name" shown at checkout to "1600 SAT Lab" (not
-// your legal name), and set its success URL to
-// https://1600satlab.com/thank-you/?session_id={CHECKOUT_SESSION_ID}
-// (Stripe substitutes the session ID at redirect time — it powers the
-// purchase-conversion event below and lets Google de-duplicate a refreshed
-// thank-you page from a real second sale).
-// TODO(owner): paste the real Payment Link URL here. See SETUP.md.
-const STRIPE_PAYMENT_LINK_URL = "https://buy.stripe.com/TODO_PAYMENT_LINK";
+// Single source of truth for the Practice Test 1 checkout.
+// Checkout is Paddle Billing. Paddle is the Merchant of Record: it is the
+// legal seller on every transaction and remits VAT/sales tax worldwide.
+//
+// TODO(owner): fill both values from the Paddle dashboard. See SETUP.md.
+//   PADDLE_CLIENT_TOKEN — Developer tools > Authentication > Client-side token
+//                         (live_... for production, test_... for sandbox)
+//   PADDLE_PRICE_ID     — Catalog > Products > your $19 one-time price (pri_...)
+// Set PADDLE_SANDBOX = true ONLY while testing with a test_ token.
+const PADDLE_CLIENT_TOKEN = "TODO_PADDLE_CLIENT_TOKEN";
+const PADDLE_PRICE_ID = "TODO_PADDLE_PRICE_ID";
+const PADDLE_SANDBOX = false;
+
+// Where Paddle sends the buyer after a completed payment.
+const PADDLE_SUCCESS_URL = "https://1600satlab.com/thank-you/";
+
+// NOTE ON JAVASCRIPT: unlike the Stripe Payment Link this replaces, Paddle
+// Billing has no static checkout URL — the overlay is opened by paddle.js
+// against a transaction it creates. So CHECKOUT specifically requires JS.
+// Every other part of every page still works without it. The static href on
+// each buy button is a mailto fallback so a JS-disabled visitor still has a
+// real way to purchase rather than a dead link.
+const BUY_FALLBACK_MAILTO =
+  "mailto:support@1600satlab.com" +
+  "?subject=Practice%20Test%201%20%E2%80%94%20purchase%20request";
 
 // Where a purchase CTA points when SALES_ENABLED is false.
 const WAITLIST_URL = "/sample/#waitlist";
@@ -45,10 +57,47 @@ const GA_MEASUREMENT_ID = "TODO_GA4_ID";
 
   document.addEventListener("DOMContentLoaded", function () {
     applySalesState();
+    initPaddle();
     initNavToggle();
     initAnalytics();
     trackPurchaseIfThankYouPage();
   });
+
+  /* ------------------------------------------------------------------------
+     Paddle Billing checkout
+     ------------------------------------------------------------------------ */
+
+  function paddleConfigured() {
+    return (
+      PADDLE_CLIENT_TOKEN.indexOf("TODO") === -1 &&
+      PADDLE_PRICE_ID.indexOf("TODO") === -1
+    );
+  }
+
+  function initPaddle() {
+    // Nothing to wire up if sales are off, the keys are still placeholders,
+    // or paddle.js did not load (blocked, offline, script error).
+    if (!SALES_ENABLED || !paddleConfigured() || !window.Paddle) return;
+
+    if (PADDLE_SANDBOX) {
+      window.Paddle.Environment.set("sandbox");
+    }
+    window.Paddle.Initialize({ token: PADDLE_CLIENT_TOKEN });
+
+    var ctas = document.querySelectorAll("[data-buy-cta]");
+    for (var i = 0; i < ctas.length; i++) {
+      ctas[i].addEventListener("click", function (e) {
+        // Only take over the click once Paddle is genuinely ready. If
+        // anything is off, the mailto href runs instead of a dead button.
+        if (!window.Paddle || !window.Paddle.Checkout) return;
+        e.preventDefault();
+        window.Paddle.Checkout.open({
+          items: [{ priceId: PADDLE_PRICE_ID, quantity: 1 }],
+          settings: { successUrl: PADDLE_SUCCESS_URL }
+        });
+      });
+    }
+  }
 
   /* ------------------------------------------------------------------------
      Sales toggle
@@ -62,9 +111,10 @@ const GA_MEASUREMENT_ID = "TODO_GA4_ID";
       var cta = buyCtas[i];
 
       if (SALES_ENABLED) {
-        // Derive every buy link from the single constant. Stripe Payment
-        // Links need no script and no special class — it's just a link.
-        cta.setAttribute("href", STRIPE_PAYMENT_LINK_URL);
+        // Paddle has no static checkout URL, so the href stays the mailto
+        // fallback and the click handler below upgrades it to the overlay
+        // when paddle.js is available.
+        cta.setAttribute("href", BUY_FALLBACK_MAILTO);
         cta.removeAttribute("data-waitlist-active");
       } else {
         var label =
@@ -191,11 +241,12 @@ const GA_MEASUREMENT_ID = "TODO_GA4_ID";
 
   /* ------------------------------------------------------------------------
      Purchase conversion — fires once, on the thank-you page only.
-     Reads the Stripe Checkout session ID from the URL (if the Payment
-     Link's success URL includes ?session_id={CHECKOUT_SESSION_ID}) so a
-     page refresh doesn't count as a second sale. Link Google Ads to this
-     GA4 property and import the "purchase" event as a conversion action —
-     no separate AW-xxxx pixel needed on this page.
+     Paddle appends its transaction id as _ptxn on the success redirect; we
+     use it as the GA4 transaction_id so a refreshed thank-you page is
+     de-duplicated rather than counted as a second sale. (session_id is also
+     read so the older Stripe-style success URLs still de-duplicate if one
+     is ever used.) Link Google Ads to this GA4 property and import the
+     "purchase" event as a conversion action — no separate AW-xxxx pixel.
      ------------------------------------------------------------------------ */
 
   function trackPurchaseIfThankYouPage() {
@@ -204,10 +255,10 @@ const GA_MEASUREMENT_ID = "TODO_GA4_ID";
 
     var value = parseFloat(marker.getAttribute("data-purchase-value")) || 0;
     var params = new URLSearchParams(window.location.search);
-    var sessionId = params.get("session_id") || "";
+    var txnId = params.get("_ptxn") || params.get("session_id") || "";
 
     track("purchase", {
-      transaction_id: sessionId,
+      transaction_id: txnId,
       value: value,
       currency: "USD",
       items: [{ item_name: "Digital SAT Practice Test 1", price: value }]
